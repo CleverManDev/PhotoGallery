@@ -1,4 +1,4 @@
-package com.bignerdranch.android.photogalery;
+package com.bignerdranch.android.photogallery;
 
 import org.junit.Test;
 

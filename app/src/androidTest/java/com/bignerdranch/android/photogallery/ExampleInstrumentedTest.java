@@ -1,4 +1,4 @@
-package com.bignerdranch.android.photogalery;
+package com.bignerdranch.android.photogallery;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;

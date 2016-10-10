@@ -4,7 +4,7 @@ android {
     compileSdkVersion 24
     buildToolsVersion "24.0.3"
     defaultConfig {
-        applicationId "com.bignerdranch.android.photogalery"
+        applicationId "com.bignerdranch.android.photogallery"
         minSdkVersion 16
         targetSdkVersion 24
         versionCode 1
