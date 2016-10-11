@@ -48,7 +48,7 @@ public class PhotoGalleryFragment extends Fragment {
 				Log.i(TAG, "Fetched contents of URL: " + result);
 
 			} catch (IOException ioe) {
-				Log.i(TAG, "Failed to fetch URL: ", ioe);
+				Log.e(TAG, "Failed to fetch URL: ", ioe);
 			}
 			return null;
 		}
