@@ -1,37 +1,42 @@
 package com.bignerdranch.android.photogallery;
 
+import com.google.gson.annotations.SerializedName;
+
 public class GalleryItem {
-	private String title;
-	private String id;
-	private String url_s;
+
+	@SerializedName("id")
+	private String mId;
+	@SerializedName("title")
+	private String mCaption;
+	@SerializedName("url_s")
+	private String mUrl_s;
 
 	@Override
 	public String toString() {
-		return title;
-	}
-
-	public String getTitle() {
-		return title;
-	}
-
-	public void setTitle(String title) {
-		this.title = title;
+		return mCaption;
 	}
 
 	public String getId() {
-		return id;
+		return mId;
 	}
 
 	public void setId(String id) {
-		this.id = id;
+		mId = id;
+	}
+
+	public String getCaption() {
+		return mCaption;
+	}
+
+	public void setCaption(String caption) {
+		mCaption = caption;
 	}
 
 	public String getUrl_s() {
-		return url_s;
+		return mUrl_s;
 	}
 
 	public void setUrl_s(String url_s) {
-		this.url_s = url_s;
+		mUrl_s = url_s;
 	}
-
 }

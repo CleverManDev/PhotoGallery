@@ -5,7 +5,6 @@ import android.util.Log;
 
 import com.google.gson.Gson;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -65,7 +64,6 @@ public class FlickrFetchr {
 				.build().toString();
 			String jsonString = getUrlString(url);
 			Log.i(TAG, "Received JSON: " + jsonString);
-
 			JSONObject jsonBody = new JSONObject(jsonString);
 
 			parseItems(items, jsonBody);
@@ -78,29 +76,11 @@ public class FlickrFetchr {
 	}
 
 	private void parseItems(List<GalleryItem> items, JSONObject jsonBody)
-			throws IOException, JSONException {
+		throws IOException, JSONException {
+
 		JSONObject photosJsonObject = jsonBody.getJSONObject("photos");
-		JSONArray photoJsonArray = photosJsonObject.getJSONArray("photo");
 		Gson gson = new Gson();
-
-		for (int i = 0; i < photoJsonArray.length(); i++) {
-//			JSONObject photoJsonObject = photoJsonArray.getJSONObject(i);
-			String photoJsonObject = gson.toJson(photoJsonArray.getJSONObject(i));
-
-
-
-			GalleryItem item = gson.;
-
-			/*item.setId(photoJsonObject.getString("id"));
-			item.setTitle(photoJsonObject.getString("title"));
-
-			if (!photoJsonObject.has("url_s")) {
-				continue;
-			}
-			item.setUrl_s(photoJsonObject.getString("url_s"));*/
-			//item.setTitle(photoJsonObject);
-			items.add(item);
-
-		}
+		PhotoCollections item = gson.fromJson(photosJsonObject.toString(), PhotoCollections.class);
+		items.addAll(item.getPhoto());
 	}
 }

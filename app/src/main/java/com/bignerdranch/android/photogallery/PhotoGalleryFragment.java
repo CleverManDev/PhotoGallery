@@ -36,7 +36,7 @@ public class PhotoGalleryFragment extends Fragment {
 		View view = inflater.inflate(R.layout.fragment_photo_gallery, container, false);
 
 		mPhotoRecyclerView = (RecyclerView) view.findViewById(R.id.fragment_photo_gallery_recycler_view);
-		mPhotoRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 1));
+		mPhotoRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 3));
 
 		setupAdapter();
 
@@ -58,8 +58,8 @@ public class PhotoGalleryFragment extends Fragment {
 			mTitleTextView = (TextView) itemView;
 		}
 
-		public void bindGalleryItem(GalleryItem item, int pos) {
-			mTitleTextView.setText(Integer.toString(pos + 1) + "  " + item.toString() + "\n");
+		public void bindGalleryItem(GalleryItem item) {
+			mTitleTextView.setText(item.toString());
 		}
 	}
 
@@ -80,7 +80,7 @@ public class PhotoGalleryFragment extends Fragment {
 		@Override
 		public void onBindViewHolder(PhotoHolder holder, int position) {
 			GalleryItem galleryItem = mGalleryItems.get(position);
-			holder.bindGalleryItem(galleryItem, position);
+			holder.bindGalleryItem(galleryItem);
 		}
 
 		@Override
