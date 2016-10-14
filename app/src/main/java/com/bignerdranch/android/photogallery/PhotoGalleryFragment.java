@@ -37,6 +37,7 @@ public class PhotoGalleryFragment extends Fragment {
 
 		mPhotoRecyclerView = (RecyclerView) view.findViewById(R.id.fragment_photo_gallery_recycler_view);
 		mPhotoRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 3));
+		mPhotoRecyclerView.addOnScrollListener(RecyclerView.OnScrollListener);
 
 		setupAdapter();
 
