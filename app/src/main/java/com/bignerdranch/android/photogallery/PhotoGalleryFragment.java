@@ -1,14 +1,18 @@
 package com.bignerdranch.android.photogallery;
 
+import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,10 +41,25 @@ public class PhotoGalleryFragment extends Fragment {
 
 		mPhotoRecyclerView = (RecyclerView) view.findViewById(R.id.fragment_photo_gallery_recycler_view);
 		mPhotoRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 3));
-		mPhotoRecyclerView.addOnScrollListener(RecyclerView.OnScrollListener);
+		mPhotoRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+			@Override
+			public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+				super.onScrollStateChanged(recyclerView, newState);
+			}
 
+			@Override
+			public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+				super.onScrolled(recyclerView, dx, dy);
+				GridLayoutManager manager = (GridLayoutManager) recyclerView.getLayoutManager();
+				if (manager.findLastVisibleItemPosition() == (manager.getItemCount() - 1)) {
+					new FetchItemsTask.execute();
+				}
+//				Context context = getActivity();
+//				String msg = Integer.toString(manager.findLastVisibleItemPosition());
+//				Toast.makeText(context, msg, Toast.LENGTH_SHORT).show();
+			}
+		});
 		setupAdapter();
-
 		return view;
 	}
 
@@ -55,7 +74,6 @@ public class PhotoGalleryFragment extends Fragment {
 
 		public PhotoHolder(View itemView) {
 			super(itemView);
-
 			mTitleTextView = (TextView) itemView;
 		}
 

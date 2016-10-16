@@ -21,6 +21,8 @@ public class FlickrFetchr {
 
 	private static final String API_KEY = "9a19232716c2b4dd2edf26277474c926";
 
+	private static int page = 1;
+
 	public byte[] getUrlBytes(String urlSpec) throws IOException {
 		URL url = new URL(urlSpec);
 		HttpURLConnection connection = (HttpURLConnection) url.openConnection();
@@ -59,8 +61,10 @@ public class FlickrFetchr {
 				.appendQueryParameter("api_key", API_KEY)
 				.appendQueryParameter("format", "json")
 				.appendQueryParameter("nojsoncallback", "1")
+				.appendQueryParameter("page", Integer.toString(page))
 				.appendQueryParameter("extras", "url_s")
 				.build().toString();
+			page++;
 			String jsonString = getUrlString(url);
 			Log.i(TAG, "Received JSON: " + jsonString);
 
