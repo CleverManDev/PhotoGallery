@@ -5,12 +5,10 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -42,6 +40,7 @@ public class PhotoGalleryFragment extends Fragment {
 		mPhotoRecyclerView = (RecyclerView) view.findViewById(R.id.fragment_photo_gallery_recycler_view);
 		mPhotoRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 3));
 		mPhotoRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+
 			@Override
 			public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
 				super.onScrollStateChanged(recyclerView, newState);
@@ -52,7 +51,9 @@ public class PhotoGalleryFragment extends Fragment {
 				super.onScrolled(recyclerView, dx, dy);
 				GridLayoutManager manager = (GridLayoutManager) recyclerView.getLayoutManager();
 				if (manager.findLastVisibleItemPosition() == (manager.getItemCount() - 1)) {
-					new FetchItemsTask.execute();
+					new FetchItemsTask().execute();
+					String page = Integer.toString(FlickrFetchr.page);
+					Toast.makeText(getContext(), page, Toast.LENGTH_SHORT).show();
 				}
 //				Context context = getActivity();
 //				String msg = Integer.toString(manager.findLastVisibleItemPosition());
@@ -77,8 +78,8 @@ public class PhotoGalleryFragment extends Fragment {
 			mTitleTextView = (TextView) itemView;
 		}
 
-		public void bindGalleryItem(GalleryItem item) {
-			mTitleTextView.setText(item.toString());
+		public void bindGalleryItem(GalleryItem item, int position) {
+			mTitleTextView.setText(Integer.toString(position + 1) + " " + item.toString());
 		}
 	}
 
@@ -99,7 +100,7 @@ public class PhotoGalleryFragment extends Fragment {
 		@Override
 		public void onBindViewHolder(PhotoHolder holder, int position) {
 			GalleryItem galleryItem = mGalleryItems.get(position);
-			holder.bindGalleryItem(galleryItem);
+			holder.bindGalleryItem(galleryItem, position);
 		}
 
 		@Override
@@ -117,7 +118,7 @@ public class PhotoGalleryFragment extends Fragment {
 
 		@Override
 		protected void onPostExecute(List<GalleryItem> items) {
-			mItems = items;
+			mItems.addAll(items);
 			setupAdapter();
 		}
 	}

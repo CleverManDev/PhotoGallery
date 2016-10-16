@@ -1,7 +1,9 @@
 package com.bignerdranch.android.photogallery;
 
+import android.content.Context;
 import android.net.Uri;
 import android.util.Log;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -21,7 +23,7 @@ public class FlickrFetchr {
 
 	private static final String API_KEY = "9a19232716c2b4dd2edf26277474c926";
 
-	private static int page = 1;
+	public static int page = 1;
 
 	public byte[] getUrlBytes(String urlSpec) throws IOException {
 		URL url = new URL(urlSpec);
