@@ -21,6 +21,7 @@ public class PhotoGalleryFragment extends Fragment {
 
 	private RecyclerView mPhotoRecyclerView;
 	private List<GalleryItem> mItems = new ArrayList<>();
+	private PhotoAdapter mPhotoAdapter;
 
 	public static PhotoGalleryFragment newInstance() {
 		return new PhotoGalleryFragment();
@@ -49,12 +50,15 @@ public class PhotoGalleryFragment extends Fragment {
 			@Override
 			public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
 				super.onScrolled(recyclerView, dx, dy);
+
 				GridLayoutManager manager = (GridLayoutManager) recyclerView.getLayoutManager();
-				if (manager.findLastVisibleItemPosition() == (manager.getItemCount() - 1)) {
-					new FetchItemsTask().execute();
-					String page = Integer.toString(FlickrFetchr.page);
-					Toast.makeText(getContext(), page, Toast.LENGTH_SHORT).show();
+				Integer last_page = manager.findLastVisibleItemPosition();
+
+				if ((dy > 0) & (last_page == 99)) {
+					Toast.makeText(getContext(), last_page.toString() + " " + Integer.toString(dy), Toast.LENGTH_SHORT).show();
+
 				}
+
 //				Context context = getActivity();
 //				String msg = Integer.toString(manager.findLastVisibleItemPosition());
 //				Toast.makeText(context, msg, Toast.LENGTH_SHORT).show();
@@ -66,7 +70,8 @@ public class PhotoGalleryFragment extends Fragment {
 
 	private void setupAdapter() {
 		if (isAdded()) {
-			mPhotoRecyclerView.setAdapter(new PhotoAdapter(mItems));
+			mPhotoAdapter = new PhotoAdapter(mItems);
+			mPhotoRecyclerView.setAdapter(mPhotoAdapter);
 		}
 	}
 
@@ -107,6 +112,7 @@ public class PhotoGalleryFragment extends Fragment {
 		public int getItemCount() {
 			return mGalleryItems.size();
 		}
+
 	}
 
 	private class FetchItemsTask extends AsyncTask<Void, Void, List<GalleryItem>> {
