@@ -1,6 +1,5 @@
 package com.bignerdranch.android.photogallery;
 
-import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -10,7 +9,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,6 +20,9 @@ public class PhotoGalleryFragment extends Fragment {
 	private RecyclerView mPhotoRecyclerView;
 	private List<GalleryItem> mItems = new ArrayList<>();
 	private PhotoAdapter mPhotoAdapter;
+	private PhotoHolder mPhotoHolder;
+	private int mStatus = 0;
+	private int mPosition;
 
 	public static PhotoGalleryFragment newInstance() {
 		return new PhotoGalleryFragment();
@@ -37,31 +38,22 @@ public class PhotoGalleryFragment extends Fragment {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View view = inflater.inflate(R.layout.fragment_photo_gallery, container, false);
+		FlickrFetchr.setPage(1);
 
 		mPhotoRecyclerView = (RecyclerView) view.findViewById(R.id.fragment_photo_gallery_recycler_view);
 		mPhotoRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 3));
 		mPhotoRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
 
 			@Override
-			public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-				super.onScrollStateChanged(recyclerView, newState);
-			}
-
-			@Override
 			public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
 				super.onScrolled(recyclerView, dx, dy);
 
 				GridLayoutManager manager = (GridLayoutManager) recyclerView.getLayoutManager();
-				Integer last_page = manager.findLastVisibleItemPosition();
+				Integer lastPosition = manager.findLastVisibleItemPosition();
 
-				if ((dy > 0) & (last_page == 99)) {
-					Toast.makeText(getContext(), last_page.toString() + " " + Integer.toString(dy), Toast.LENGTH_SHORT).show();
-
+				if (dy > 0 && lastPosition == (mPosition - 1) && mStatus == 0) {
+					new FetchItemsTask().execute();
 				}
-
-//				Context context = getActivity();
-//				String msg = Integer.toString(manager.findLastVisibleItemPosition());
-//				Toast.makeText(context, msg, Toast.LENGTH_SHORT).show();
 			}
 		});
 		setupAdapter();
@@ -99,7 +91,8 @@ public class PhotoGalleryFragment extends Fragment {
 		@Override
 		public PhotoHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
 			TextView textView = new TextView(getActivity());
-			return new PhotoHolder(textView);
+			mPhotoHolder = new PhotoHolder(textView);
+			return mPhotoHolder;
 		}
 
 		@Override
@@ -112,19 +105,27 @@ public class PhotoGalleryFragment extends Fragment {
 		public int getItemCount() {
 			return mGalleryItems.size();
 		}
-
 	}
 
 	private class FetchItemsTask extends AsyncTask<Void, Void, List<GalleryItem>> {
 
 		@Override
 		protected List<GalleryItem> doInBackground(Void... params) {
+			mStatus = 1;
 			return new FlickrFetchr().fetchItems();
+
 		}
 
 		@Override
 		protected void onPostExecute(List<GalleryItem> items) {
-			mItems.addAll(items);
+			mItems.addAll(mPosition, items);
+
+			mPosition = mItems.size();
+			if (mPosition >= 100) {
+				mPhotoAdapter.notifyItemRangeInserted(mPosition, 100);
+				FlickrFetchr.pageIncrement();
+			}
+			mStatus = 0;
 			setupAdapter();
 		}
 	}
