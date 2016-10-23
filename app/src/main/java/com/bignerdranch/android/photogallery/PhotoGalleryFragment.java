@@ -10,17 +10,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class PhotoGalleryFragment extends Fragment {
 
-	private static final String TAG = "PhotoGalleryFragment";
+//	private static final String TAG = "PhotoGalleryFragment";
 
-	private int heigth;
 	private int width;
+	private int gridCol = 1;
 
 	private RecyclerView mPhotoRecyclerView;
 	private List<GalleryItem> mItems = new ArrayList<>();
@@ -41,19 +40,21 @@ public class PhotoGalleryFragment extends Fragment {
 		View view = inflater.inflate(R.layout.fragment_photo_gallery, container, false);
 
 		mPhotoRecyclerView = (RecyclerView) view.findViewById(R.id.fragment_photo_gallery_recycler_view);
-		mPhotoRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 1));
-		mPhotoRecyclerView.getViewTreeObserver().addOnGlobalFocusChangeListener(new ViewTreeObserver.OnGlobalFocusChangeListener() {
+		mPhotoRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 3));
+		mPhotoRecyclerView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
 			@Override
-			public void onGlobalFocusChanged(View oldFocus, View newFocus) {
-				mPhotoRecyclerView.measure(width, heigth);
-//				Toast.makeText(getActivity(), Integer.toString(width) + " " + Integer.toString(heigth), Toast.LENGTH_SHORT).show();
-
-
+			public void onGlobalLayout() {
+				width = mPhotoRecyclerView.getMeasuredWidth();
+				gridCol = width / 380;
+				GridLayoutManager gridLayoutManager = (GridLayoutManager) mPhotoRecyclerView.getLayoutManager();
+				if (gridCol > 3) {
+					gridLayoutManager.setSpanCount(gridCol);
+				}
 			}
 		});
 
-		setupAdapter();
 
+		setupAdapter();
 		return view;
 	}
 
@@ -73,7 +74,7 @@ public class PhotoGalleryFragment extends Fragment {
 		}
 
 		public void bindGalleryItem(GalleryItem item) {
-			mTitleTextView.setText(item.toString() + " " + Integer.toString(width) + " " + Integer.toString(heigth));
+			mTitleTextView.setText(item.toString() + " " + Integer.toString(width));
 		}
 	}
 
