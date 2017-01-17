@@ -5,6 +5,7 @@ import android.graphics.BitmapFactory;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Message;
+import android.support.v4.util.LruCache;
 import android.util.Log;
 
 import java.io.IOException;
@@ -19,6 +20,7 @@ public class ThumbnailDownloader<T> extends HandlerThread {
 	private ConcurrentMap<T, String> mRequestMap = new ConcurrentHashMap<>();
 	private Handler mResponseHandler;
 	private ThumbnailDownloadListener<T> mThumbnailDownloadListener;
+	private LruCache<String, Bitmap> mLruCache;
 
 	private boolean mHasQuit;
 
