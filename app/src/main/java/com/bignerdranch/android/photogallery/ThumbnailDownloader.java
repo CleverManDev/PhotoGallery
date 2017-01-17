@@ -20,6 +20,8 @@ public class ThumbnailDownloader<T> extends HandlerThread {
 	private Handler mResponseHandler;
 	private ThumbnailDownloadListener<T> mThumbnailDownloadListener;
 
+	private boolean mHasQuit;
+
 	public interface ThumbnailDownloadListener<T> {
 		void onThumbnailDownloaded(T target, Bitmap thumbnail);
 	}
@@ -45,6 +47,12 @@ public class ThumbnailDownloader<T> extends HandlerThread {
 				}
 			}
 		};
+	}
+
+	@Override
+	public boolean quit() {
+		mHasQuit = true;
+		return super.quit();
 	}
 
 	public void queueThumbnail(T target, String url) {
@@ -77,7 +85,7 @@ public class ThumbnailDownloader<T> extends HandlerThread {
 			mResponseHandler.post(new Runnable() {
 				@Override
 				public void run() {
-					if (mRequestMap.get(target) != url) {
+					if (mRequestMap.get(target) != url || mHasQuit) {
 						return;
 					}
 
