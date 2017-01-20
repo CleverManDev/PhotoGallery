@@ -38,12 +38,13 @@ public class PhotoGalleryFragment extends Fragment {
 
 		Handler responseHandler = new Handler();
 		mThumbnailDownloader = new ThumbnailDownloader<>(responseHandler);
-		mThumbnailDownloader.setThumbnailDownloadListener(new ThumbnailDownloader.ThumbnailDownloadListener<PhotoHolder>() {
-			@Override
-			public void onThumbnailDownloaded(PhotoHolder photoHolder, Bitmap bitmap) {
-				Drawable drawable = new BitmapDrawable(getResources(), bitmap);
-				photoHolder.bindDrawable(drawable);
-			}
+		mThumbnailDownloader.setThumbnailDownloadListener(
+			new ThumbnailDownloader.ThumbnailDownloadListener<PhotoHolder>() {
+				@Override
+				public void onThumbnailDownloaded(PhotoHolder photoHolder, Bitmap bitmap) {
+					Drawable drawable = new BitmapDrawable(getResources(), bitmap);
+					photoHolder.bindDrawable(drawable);
+				}
 		});
 		mThumbnailDownloader.start();
 		mThumbnailDownloader.getLooper();
@@ -87,7 +88,6 @@ public class PhotoGalleryFragment extends Fragment {
 
 		public PhotoHolder(View itemView) {
 			super(itemView);
-
 			mImageView = (ImageView) itemView.findViewById(R.id.fragment_photo_gallery_image_view);
 		}
 
@@ -114,9 +114,33 @@ public class PhotoGalleryFragment extends Fragment {
 		@Override
 		public void onBindViewHolder(PhotoHolder photoHolder, int position) {
 			GalleryItem galleryItem = mGalleryItems.get(position);
-			Drawable placeholder = getResources().getDrawable(R.drawable.bill_up_close);
+			Bitmap bitmap = mThumbnailDownloader.getCachedImage(galleryItem.getUrl());
+
+			if (bitmap == null) {
+				Drawable drawable = getResources().getDrawable(R.drawable.bill_up_close);
+				mThumbnailDownloader.queueThumbnail(photoHolder, galleryItem.getUrl());
+			} else {
+				Log.i(TAG, "Loaded image from cache");
+				photoHolder.bindDrawable(new BitmapDrawable(getResources(), bitmap));
+			}
+			/*Drawable placeholder = getResources().getDrawable(R.drawable.bill_up_close);
 			photoHolder.bindDrawable(placeholder);
-			mThumbnailDownloader.queueThumbnail(photoHolder, galleryItem.getUrl());
+			mThumbnailDownloader.queueThumbnail(photoHolder, galleryItem.getUrl());*/
+		}
+
+		private void preloadAjacentImages(int position) {
+			final int imageBufferSize = 10;
+
+			int sIndex = Math.max(position - imageBufferSize, 0);
+			int eIndex = Math.min(position + imageBufferSize, mGalleryItems.size() - 1);
+			for (int i = sIndex; i < eIndex; i++) {
+				if (i == position) {
+					continue;
+				}
+				String url = mGalleryItems.get(i).getUrl();
+				mThumbnailDownloader.preloadImage(url);
+			}
+
 		}
 
 		@Override
