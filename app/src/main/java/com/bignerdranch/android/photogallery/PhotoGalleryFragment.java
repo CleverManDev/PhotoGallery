@@ -22,6 +22,9 @@ import android.widget.ImageView;
 import java.util.ArrayList;
 import java.util.List;
 
+import static android.view.inputmethod.EditorInfo.IME_ACTION_DONE;
+import static android.view.inputmethod.EditorInfo.IME_ACTION_NEXT;
+
 public class PhotoGalleryFragment extends Fragment {
 
 	private static final String TAG = "PhotoGalleryFragment";
@@ -80,6 +83,7 @@ public class PhotoGalleryFragment extends Fragment {
 				Log.i(TAG, "onQueryTextSubmit: " + s);
 				QueryPreferences.setStoredQuery(getActivity(), s);
 				updateItems();
+				searchView.setImeOptions(IME_ACTION_DONE);
 				return true;
 			}
 
