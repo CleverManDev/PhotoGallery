@@ -1,5 +1,6 @@
 package com.bignerdranch.android.photogallery;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
@@ -17,13 +18,12 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static android.view.inputmethod.EditorInfo.IME_ACTION_DONE;
-import static android.view.inputmethod.EditorInfo.IME_ACTION_NEXT;
 
 public class PhotoGalleryFragment extends Fragment {
 
@@ -77,13 +77,20 @@ public class PhotoGalleryFragment extends Fragment {
 		inflater.inflate(R.menu.fragment_photo_gallery, menu);
 		final MenuItem searchItem = menu.findItem(R.id.menu_item_search);
 		final SearchView searchView = (SearchView) searchItem.getActionView();
+		searchView.setIconifiedByDefault(true);
+//		searchItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM)
 		searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
 			@Override
 			public boolean onQueryTextSubmit(String s) {
 				Log.i(TAG, "onQueryTextSubmit: " + s);
 				QueryPreferences.setStoredQuery(getActivity(), s);
 				updateItems();
-				searchView.setImeOptions(IME_ACTION_DONE);
+				InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+				if (imm.isActive()) {
+					imm.toggleSoftInput(0,0);
+				}
+				searchItem.collapseActionView();
+
 				return true;
 			}
 
@@ -94,13 +101,14 @@ public class PhotoGalleryFragment extends Fragment {
 			}
 		});
 
-		searchView.setOnClickListener(new View.OnClickListener() {
+		searchView.setOnSearchClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				String query = QueryPreferences.getStoredQuery(getActivity());
 				searchView.setQuery(query, false);
 			}
 		});
+
 	}
 
 	@Override
