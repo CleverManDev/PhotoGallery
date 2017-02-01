@@ -69,8 +69,7 @@ public class PollService extends IntentService{
 
 	private boolean isNetworkAvailableAndConnected() {
 		ConnectivityManager cm = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
-		boolean isNetworkAvailable = cm.getActiveNetworkInfo() != null;
-		boolean isNetworkConnected = isNetworkAvailable && cm.getActiveNetworkInfo().isConnected();
-		return isNetworkConnected;
+		return (cm.getActiveNetworkInfo() != null)
+				&& cm.getActiveNetworkInfo().isConnected();
 	}
 }
