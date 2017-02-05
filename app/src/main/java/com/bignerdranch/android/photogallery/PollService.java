@@ -69,6 +69,7 @@ public class PollService extends IntentService{
 			return;
 		}
 
+
 		String resultId = items.get(0).getId();
 		if (resultId.equals(lastResultId)) {
 			Log.i(TAG, "Got an old result: " + resultId);
