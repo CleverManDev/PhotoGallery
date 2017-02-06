@@ -23,6 +23,8 @@ import android.widget.ImageView;
 import java.util.ArrayList;
 import java.util.List;
 
+// For future Using JobService
+
 public class PhotoGalleryFragment extends Fragment {
 
 	private static final String TAG = "PhotoGalleryFragment";
@@ -44,11 +46,12 @@ public class PhotoGalleryFragment extends Fragment {
 
 		Handler responseHandler = new Handler();
 		mThumbnailDownloader = new ThumbnailDownloader<>(responseHandler);
-		mThumbnailDownloader.setThumbnailDownloadListener(new ThumbnailDownloader.ThumbnailDownloadListener<PhotoHolder>() {
-			@Override
-			public void onThumbnailDownloaded(PhotoHolder photoHolder, Bitmap bitmap) {
-				Drawable drawable = new BitmapDrawable(getResources(), bitmap);
-				photoHolder.bindDrawable(drawable);
+		mThumbnailDownloader.setThumbnailDownloadListener(
+				new ThumbnailDownloader.ThumbnailDownloadListener<PhotoHolder>() {
+					@Override
+					public void onThumbnailDownloaded(PhotoHolder photoHolder, Bitmap bitmap) {
+						Drawable drawable = new BitmapDrawable(getResources(), bitmap);
+						photoHolder.bindDrawable(drawable);
 			}
 		});
 		mThumbnailDownloader.start();
@@ -61,7 +64,8 @@ public class PhotoGalleryFragment extends Fragment {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View view = inflater.inflate(R.layout.fragment_photo_gallery, container, false);
 
-		mPhotoRecyclerView = (RecyclerView) view.findViewById(R.id.fragment_photo_gallery_recycler_view);
+		mPhotoRecyclerView = (RecyclerView) view
+				.findViewById(R.id.fragment_photo_gallery_recycler_view);
 		mPhotoRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 3));
 
 		setupAdapter();
