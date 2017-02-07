@@ -12,6 +12,8 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
 
+//for Supporting Non-HTTP Links
+
 public class PhotoPageFragment extends VisibleFragment {
 	private static final String ARG_URI = "photo_page_uri";
 	private Uri mUri;
